@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {app, db} from './util/firebase';
 import ToDo from './components/ToDo';
-
+import SignIn from './components/SignIn';
 import { getAuth } from "firebase/auth";
 import 'firebase/compat/analytics';
 
@@ -17,7 +17,7 @@ function App() {
   return (
     <body>
     <div className="App">
-      {user ? <ToDo /> : <div> not home yet </div>}
+      {user ? <ToDo /> : <SignIn />}
     </div>
     </body>
   );
