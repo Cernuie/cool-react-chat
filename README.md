@@ -1,6 +1,6 @@
 # Web Chat Client
 
-This project was created with Google Firebase, Socket.io, and React
+This project was created with Google Firebase and React
 
 ## Available Scripts
 
