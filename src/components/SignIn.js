@@ -16,6 +16,7 @@ export default function SignIn(){
             // The signed-in user info.
             const user = result.user;
             // ...
+            console.log(token, user)
           }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
