@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import { db } from '../util/firebase';
 import { app } from '../util/firebase';
 import { getAuth } from "firebase/auth"
-import { getDatabase, ref, set} from "firebase/database"
+import { getDatabase, onValue, ref, set} from "firebase/database"
 const auth = getAuth(app);
 
 export default function ToDo(){
 
     const [input, setInput] = useState('')
+    const db = getDatabase();
 
     const SignOut = () => {
         return auth.currentUser && (
@@ -17,10 +17,15 @@ export default function ToDo(){
 
     const checkForUser = async() => {
         console.log(auth.currentUser)
+        const userId = auth.currentUser.uid;
+        return onValue(ref(db, '/users/' + userId), (snapshot) => {
+            console.log(snapshot.val())
+        }, {
+            onlyOnce: true
+        })
     }
 
     const createUser = () => {
-        const db = getDatabase();
         set(ref(db, 'users/' + auth.currentUser.uid), {
             username: input,
             email: auth.currentUser.email
@@ -40,7 +45,8 @@ export default function ToDo(){
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('here', input)
-        createUser()
+        checkForUser();
+        // createUser()
     }
     return(
         <div>
