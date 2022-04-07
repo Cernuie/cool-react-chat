@@ -50,9 +50,9 @@ export default function Channel() {
         const chatArea = ref.current;
         try {
             await db.ref("chats").push({
-                content: this.state.content,
+                content: content,
                 timestamp: Date.now(),
-                uid: this.state.user.uid
+                uid: user.uid
             });
             setContent('');
             chatArea.scrollBy(0, chatArea.scrollHeight);
@@ -66,5 +66,31 @@ export default function Channel() {
         const time = `${d.getDate()}/${(d.getMonth()+1)}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
         return time;
       }
-    
+
+    return (
+        <div>
+            <div className="chat-area" ref={ref}>
+                {/* loading indicator */}
+                {loadingChats ? <div className="spinner-border text-success" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div> : ""}
+                {/* chat area */}
+                {chats.map(chat => {
+                    return <p key={chat.timestamp} className={"chat-bubble " + (user.uid === chat.uid ? "current-user" : "")}>
+                        {chat.content}
+                        <br />
+                        <span className="chat-time float-right">{formatTime(chat.timestamp)}</span>
+                    </p>
+                })}
+            </div>
+            <form onSubmit={handleSubmit} className="mx-3">
+                <textarea className="form-control" name="content" onChange={handleChange} value={content}></textarea>
+                {error ? <p className="text-danger">{error}</p> : null}
+                <button type="submit" className="btn btn-submit px-5 mt-4">Send</button>
+            </form>
+            <div className="py-5 mx-3">
+                Login in as: <strong className="text-info">{user.email}</strong>
+            </div>
+        </div>
+    );
 }

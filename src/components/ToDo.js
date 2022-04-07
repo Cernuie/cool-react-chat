@@ -45,8 +45,11 @@ export default function ToDo(){
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log('here', input)
-        checkForUser();
-        // createUser()
+        if(!checkForUser()){
+            createUser()
+        } else {
+            console.log('user has already been created for this person')
+        }
     }
     return(
         <div>
