@@ -8,6 +8,7 @@ import 'firebase/compat/analytics';
 
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import Channel from './components/Channel';
 
 const auth = getAuth(app)
 
@@ -17,7 +18,7 @@ function App() {
   return (
     <body>
     <div className="App">
-      {user ? <ToDo /> : <SignIn />}
+      {user ? <Channel /> : <SignIn />}
     </div>
     </body>
   );

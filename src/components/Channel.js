@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-import { app, db } from "../util/firebase"
+import { app} from "../util/firebase"
 import { getAuth } from "firebase/auth"
+import { getDatabase, onValue, ref, set} from "firebase/database"
+
 const auth = getAuth(app)
 export default function Channel() {
     const user = auth.currentUser 
@@ -11,17 +13,22 @@ export default function Channel() {
     const [writeError, setWriteError] = useState(null);
     const [loading, setLoading] = useState(false);
     let ref = React.createRef();
+    const db = getDatabase();
 
     const findChat = async(chatArea) => {
         db.ref("chats").on("value", snapshot => {
             let chats = [];
             snapshot.forEach((snapshot) => {
-                chats.push(snap.val());
+                chats.push(snapshot.val());
             });
             chats.sort((a, b) => {return a.timestamp = b.timestamp})
             setChats(chats);
             chatArea.scrollBy(0, chatArea.scrollHeight);
             setLoading(false)
+        })
+        const postRef = ref(db, 'chats/');
+        onValue(postRef, (snapshot) => {
+            const 
         })
     }
 
@@ -57,7 +64,7 @@ export default function Channel() {
             setContent('');
             chatArea.scrollBy(0, chatArea.scrollHeight);
         } catch(e) {
-            setWriteError({ writeError: error.message })
+            setWriteError({ writeError: e.message })
         }
     }
 
@@ -71,7 +78,7 @@ export default function Channel() {
         <div>
             <div className="chat-area" ref={ref}>
                 {/* loading indicator */}
-                {loadingChats ? <div className="spinner-border text-success" role="status">
+                {loading ? <div className="spinner-border text-success" role="status">
                     <span className="sr-only">Loading...</span>
                 </div> : ""}
                 {/* chat area */}
@@ -85,7 +92,7 @@ export default function Channel() {
             </div>
             <form onSubmit={handleSubmit} className="mx-3">
                 <textarea className="form-control" name="content" onChange={handleChange} value={content}></textarea>
-                {error ? <p className="text-danger">{error}</p> : null}
+                {writeError ? <p className="text-danger">{writeError}</p> : null}
                 <button type="submit" className="btn btn-submit px-5 mt-4">Send</button>
             </form>
             <div className="py-5 mx-3">
